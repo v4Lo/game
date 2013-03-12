@@ -1,3 +1,11 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# no project files
 /nbproject
 /manifest.mf
 /build.xml
