@@ -26,6 +26,19 @@ public class Game extends BasicGame {
     private int[] currentBlock;
     private int currentBlockSize;
     AppGameContainer app;
+    Random random = new Random();
+    private long triforce = 0;
+
+    public enum Block {
+
+        J,
+        L,
+        I,
+        O,
+        Z,
+        S,
+        T
+    }
 
     public static void main(String[] args) {
         new Game();
@@ -80,17 +93,6 @@ public class Game extends BasicGame {
         return new int[16];
     }
 
-    public enum Block {
-
-        J,
-        L,
-        I,
-        O,
-        Z,
-        S,
-        T
-    }
-
     @Override
     public void keyPressed(int key, char c) {
         switch (key) {
@@ -122,7 +124,6 @@ public class Game extends BasicGame {
                 break;
         }
     }
-    Random random = new Random();
 
     public void drop() {
         while (canMove(currentX, currentY + 1, currentBlock)) {
@@ -171,7 +172,6 @@ public class Game extends BasicGame {
     }
 
     public void removeLine(int y) {
-
         System.arraycopy(field, 0, field, cols, (y - 1) * cols);
         Arrays.fill(field, 0, cols - 1, 0);
     }
@@ -187,12 +187,11 @@ public class Game extends BasicGame {
     public void gameOver() {
         resetGame();
     }
-    private long triforce = 0;
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
         triforce += delta;
-        if (triforce > 150) {
+        if (triforce > 200) {
             if (canMove(currentX, currentY + 1, currentBlock)) {
                 currentY++;
             } else {
@@ -223,7 +222,7 @@ public class Game extends BasicGame {
 
                 newBlock();
             }
-            triforce -= 150;
+            triforce -= 200;
         }
     }
 
