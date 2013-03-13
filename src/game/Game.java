@@ -74,6 +74,8 @@ public class Game extends BasicGame {
                 return new int[]{0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0};
             case S:
                 return new int[]{0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0};
+            case T:
+                return new int[]{0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0};
         }
         return new int[16];
     }
@@ -85,7 +87,8 @@ public class Game extends BasicGame {
         I,
         O,
         Z,
-        S
+        S,
+        T
     }
 
     @Override
@@ -184,7 +187,6 @@ public class Game extends BasicGame {
     public void gameOver() {
         resetGame();
     }
-    
     private long triforce = 0;
 
     @Override
