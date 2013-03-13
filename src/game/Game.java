@@ -199,6 +199,7 @@ public class Game extends BasicGame {
                         if (currentBlock[i + j * currentBlockSize] > 0) {
                             if (field[currentX + i + (currentY + j) * cols] > 0) {
                                 gameOver();
+                                return;
                             }
                             field[currentX + i + (currentY + j) * cols] = currentBlock[i + j * currentBlockSize];
                         }
