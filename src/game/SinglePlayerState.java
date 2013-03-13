@@ -72,17 +72,17 @@ public class SinglePlayerState extends BasicGameState {
             case J:
                 return new int[]{0, 1, 0, 0, 1, 0, 1, 1, 0};
             case L:
-                return new int[]{0, 1, 0, 0, 1, 0, 0, 1, 1};
+                return new int[]{0, 2, 0, 0, 2, 0, 0, 2, 2};
             case I:
-                return new int[]{0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0};
+                return new int[]{0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0};
             case O:
-                return new int[]{1, 1, 1, 1};
+                return new int[]{4, 4, 4, 4};
             case Z:
-                return new int[]{0, 0, 1, 0, 1, 1, 0, 1, 0};
+                return new int[]{0, 0, 5, 0, 5, 5, 0, 5, 0};
             case S:
-                return new int[]{1, 0, 0, 1, 1, 0, 0, 1, 0};
+                return new int[]{6, 0, 0, 6, 6, 0, 0, 6, 0};
             case T:
-                return new int[]{0, 1, 0, 1, 1, 1, 0, 0, 0};
+                return new int[]{0, 7, 0, 7, 7, 7, 0, 0, 0};
         }
         return new int[16];
     }
@@ -202,25 +202,43 @@ public class SinglePlayerState extends BasicGameState {
         g.drawRect(49f, 49f, 30 * cols + 1, 30 * rows + 1);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                switch (field[j + i * cols]) {
-                    case 0:
-                        g.setColor(Color.red);
-                        break;
-                    case 1:
-                        g.setColor(Color.green);
-                        break;
+                if (field[j + i * cols] > 0) {
+                    g.setColor(idToColor(field[j + i * cols]));
+                    g.fillRect(50f + j * 30, 50f + i * 30, 29, 29);
                 }
-                g.fillRect(50f + j * 30, 50f + i * 30, 29, 29);
             }
         }
         for (int i = 0; i < currentBlockSize; i++) {
             for (int j = 0; j < currentBlockSize; j++) {
-                g.setColor(Color.blue);
                 if (currentBlock[i + j * currentBlockSize] > 0) {
+                    g.setColor(idToColor(currentBlock[i + j * currentBlockSize]));
+                    //g.drawRect(49f + (currentX + i) * 30, 49f + (currentY + j) * 30, 31, 31);
                     g.fillRect(50f + (currentX + i) * 30, 50f + (currentY + j) * 30, 29, 29);
                 }
             }
         }
+    }
+
+    public Color idToColor(int id) {
+        switch (id) {
+            case 0:
+                return Color.black;
+            case 1:
+                return Color.green;
+            case 2:
+                return Color.cyan;
+            case 3:
+                return Color.magenta;
+            case 4:
+                return Color.white;
+            case 5:
+                return Color.red;
+            case 6:
+                return Color.gray;
+            case 7:
+                return Color.orange;
+        }
+        return Color.transparent;
     }
 
     @Override
