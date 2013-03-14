@@ -19,6 +19,7 @@ public class SinglePlayerState extends BasicGameState {
     public SinglePlayerState(int id) {
         stateID = id;
         theGame = new GameField();
+        theGame.start();
     }
     
     @Override

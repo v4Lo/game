@@ -1,14 +1,13 @@
 package game;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Transform;
 
 /**
  *
@@ -26,6 +25,7 @@ public class GameField {
     private int[] currentBlock;
     private int currentBlockSize;
     private boolean started = false;
+    private LinkedList<Block> blockQueue;
 
     private enum Block {
 
@@ -52,7 +52,11 @@ public class GameField {
 
     private void setCurrentBlock(int[] newBlock) {
         currentBlock = newBlock;
-        currentBlockSize = (int) Math.sqrt(currentBlock.length);
+        currentBlockSize = getBlockSize(currentBlock);
+    }
+
+    private int getBlockSize(int[] b) {
+        return (int) Math.sqrt(b.length);
     }
 
     public void soutBlock(int[] block) {
@@ -66,13 +70,13 @@ public class GameField {
             case J:
                 return new int[]{0, 1, 0, 0, 1, 0, 1, 1, 0};
             case L:
-                return new int[]{0, 2, 0, 0, 2, 0, 0, 2, 2};
+                return new int[]{2, 0, 0, 2, 0, 0, 2, 2, 0};
             case I:
                 return new int[]{0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0};
             case O:
                 return new int[]{4, 4, 4, 4};
             case Z:
-                return new int[]{0, 0, 5, 0, 5, 5, 0, 5, 0};
+                return new int[]{0, 5, 0, 5, 5, 0, 5, 0, 0};
             case S:
                 return new int[]{6, 0, 0, 6, 6, 0, 0, 6, 0};
             case T:
@@ -82,13 +86,16 @@ public class GameField {
     }
 
     public void drop() {
+        if (!started) {
+            return;
+        }
         while (canMove(currentX, currentY + 1, currentBlock)) {
             currentY++;
         }
     }
 
-    private int[] randomBlock() {
-        return block(Block.values()[random.nextInt(Block.values().length)]);
+    private Block randomBlock() {
+        return Block.values()[random.nextInt(Block.values().length)];
     }
 
     public boolean rotateLeft() {
@@ -178,15 +185,20 @@ public class GameField {
 
     public void gameOver() {
         resetGame();
+        //stop();
     }
 
     public final void resetGame() {
+        blockQueue = new LinkedList<>();
         Arrays.fill(field, 0);
         newBlock();
     }
 
     private void newBlock() {
-        setCurrentBlock(randomBlock());
+        while (blockQueue.size() < 5) {
+            blockQueue.offer(randomBlock());
+        }
+        setCurrentBlock(block(blockQueue.poll()));
 
         currentX = cols / 2 - currentBlockSize / 2;
         currentY = -currentBlockSize;
@@ -194,8 +206,6 @@ public class GameField {
         for (int i = 0; i <= currentBlockSize && !canMove(currentX, currentY, currentBlock); i++) {
             currentY++;
         }
-        System.out.println(currentX);
-        System.out.println(currentY);
     }
 
     public Color idToColor(int id) {
@@ -231,11 +241,22 @@ public class GameField {
                 }
             }
         }
-        for (int i = 0; i < currentBlockSize; i++) {
-            for (int j = 0; j < currentBlockSize; j++) {
-                if (currentBlock[i + j * currentBlockSize] > 0) {
-                    g.setColor(idToColor(currentBlock[i + j * currentBlockSize]));
-                    g.fillRect(1f + (currentX + i) * 30, 1f + (currentY + j) * 30, 29, 29);
+        drawBlockAt(currentX, currentY, currentBlock, g);
+        int offset = 0;
+        for (Iterator<Block> it = blockQueue.iterator(); it.hasNext();) {
+            int[] temp = block(it.next());
+            drawBlockAt(cols + 1, offset, temp, g);
+            offset += getBlockSize(temp)+1;
+        }
+    }
+
+    public void drawBlockAt(int x, int y, int[] block, Graphics g) {
+        int blockSize = getBlockSize(block);
+        for (int i = 0; i < blockSize; i++) {
+            for (int j = 0; j < blockSize; j++) {
+                if (block[i + j * blockSize] > 0) {
+                    g.setColor(idToColor(block[i + j * blockSize]));
+                    g.fillRect(1f + (x + i) * 30, 1f + (y + j) * 30, 29, 29);
                 }
             }
         }
