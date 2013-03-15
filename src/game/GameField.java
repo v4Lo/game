@@ -1,10 +1,8 @@
 package game;
 
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -16,7 +14,6 @@ import org.newdawn.slick.Graphics;
 public class GameField {
 
     private Random random = new Random();
-    private long triforce = 0;
     private int rows = 16;
     private int cols = 9;
     private int[] field = new int[rows * cols];
@@ -26,6 +23,7 @@ public class GameField {
     private int currentBlockSize;
     private boolean started = false;
     private LinkedList<Block> blockQueue;
+    private int speed = 200;
 
     private enum Block {
 
@@ -92,6 +90,7 @@ public class GameField {
         while (canMove(currentX, currentY + 1, currentBlock)) {
             currentY++;
         }
+        triforce = speed;
     }
 
     private Block randomBlock() {
@@ -246,7 +245,7 @@ public class GameField {
         for (Iterator<Block> it = blockQueue.iterator(); it.hasNext();) {
             int[] temp = block(it.next());
             drawBlockAt(cols + 1, offset, temp, g);
-            offset += getBlockSize(temp)+1;
+            offset += getBlockSize(temp) + 1;
         }
     }
 
@@ -261,41 +260,44 @@ public class GameField {
             }
         }
     }
+    private int triforce;
 
     public void update(int delta) {
         triforce += delta;
-        if (triforce > 200 && started) {
-            if (canMove(currentX, currentY + 1, currentBlock)) {
-                currentY++;
-            } else {
-                for (int i = 0; i < currentBlockSize; i++) {
-                    for (int j = 0; j < currentBlockSize; j++) {
-                        if (currentBlock[i + j * currentBlockSize] > 0) {
-                            if (field[currentX + i + (currentY + j) * cols] > 0) {
-                                gameOver();
-                                return;
-                            }
-                            field[currentX + i + (currentY + j) * cols] = currentBlock[i + j * currentBlockSize];
+        if (speed > triforce || !started) {
+            return;
+        }
+
+        triforce -= speed;
+        if (canMove(currentX, currentY + 1, currentBlock)) {
+            currentY++;
+        } else {
+            for (int i = 0; i < currentBlockSize; i++) {
+                for (int j = 0; j < currentBlockSize; j++) {
+                    if (currentBlock[i + j * currentBlockSize] > 0) {
+                        if (field[currentX + i + (currentY + j) * cols] > 0) {
+                            gameOver();
+                            return;
                         }
+                        field[currentX + i + (currentY + j) * cols] = currentBlock[i + j * currentBlockSize];
                     }
                 }
-
-                boolean rowCheck;
-                for (int i = 0; i < rows; i++) {
-                    rowCheck = true;
-                    for (int j = 0; j < cols; j++) {
-                        if (field[j + cols * i] <= 0 || !rowCheck) {
-                            rowCheck = false;
-                        }
-                    }
-                    if (rowCheck) {
-                        removeLine(i + 1);
-                    }
-                }
-
-                newBlock();
             }
-            triforce -= 200;
+
+            boolean rowCheck;
+            for (int i = 0; i < rows; i++) {
+                rowCheck = true;
+                for (int j = 0; j < cols; j++) {
+                    if (field[j + cols * i] <= 0 || !rowCheck) {
+                        rowCheck = false;
+                    }
+                }
+                if (rowCheck) {
+                    removeLine(i + 1);
+                }
+            }
+
+            newBlock();
         }
     }
 }
