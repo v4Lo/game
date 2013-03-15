@@ -12,27 +12,27 @@ import org.newdawn.slick.state.StateBasedGame;
  * @author V
  */
 public class SinglePlayerState extends BasicGameState {
-    
+
     private int stateID;
     private GameField theGame;
-    
+
     public SinglePlayerState(int id) {
         stateID = id;
-        theGame = new GameField();
-        theGame.start();
     }
-    
+
     @Override
     public int getID() {
         return stateID;
     }
-    
+
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         container.setVSync(true);
         container.setAlwaysRender(true);
+        theGame = new GameField();
+        theGame.start();
     }
-    
+
     @Override
     public void keyPressed(int key, char c) {
         switch (key) {
@@ -56,13 +56,13 @@ public class SinglePlayerState extends BasicGameState {
                 break;
         }
     }
-    
+
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         g.translate(50f, 50f);
         theGame.render(g);
     }
-    
+
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         theGame.update(delta);

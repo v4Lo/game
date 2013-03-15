@@ -14,16 +14,17 @@ import org.newdawn.slick.Graphics;
 public class GameField {
 
     private Random random = new Random();
-    private int rows = 16;
-    private int cols = 9;
-    private int[] field = new int[rows * cols];
-    private int currentX;
-    private int currentY;
-    private int[] currentBlock;
+    public int rows = 16;
+    public int cols = 9;
+    public int[] field = new int[rows * cols];
+    public int currentX;
+    public int currentY;
+    public int[] currentBlock;
     private int currentBlockSize;
     private boolean started = false;
     private LinkedList<Block> blockQueue;
     private int speed = 200;
+    private int triforce;
 
     private enum Block {
 
@@ -48,19 +49,13 @@ public class GameField {
         started = false;
     }
 
-    private void setCurrentBlock(int[] newBlock) {
+    public void setCurrentBlock(int[] newBlock) {
         currentBlock = newBlock;
         currentBlockSize = getBlockSize(currentBlock);
     }
 
     private int getBlockSize(int[] b) {
         return (int) Math.sqrt(b.length);
-    }
-
-    public void soutBlock(int[] block) {
-        for (int i = 0; i < currentBlock.length; i = i + currentBlockSize) {
-            System.out.println(block[i] + "" + block[i + 1] + "" + block[i + 2] + "" + block[i + 3]);
-        }
     }
 
     private int[] block(Block type) {
@@ -230,6 +225,11 @@ public class GameField {
     }
 
     public void render(Graphics g) {
+        drawField(g);
+        drawNextBlocks(g);
+    }
+
+    protected void drawField(Graphics g) {
         g.setColor(Color.yellow);
         g.drawRect(0f, 0f, 30 * cols + 1, 30 * rows + 1);
         for (int i = 0; i < rows; i++) {
@@ -241,6 +241,9 @@ public class GameField {
             }
         }
         drawBlockAt(currentX, currentY, currentBlock, g);
+    }
+
+        protected void drawNextBlocks(Graphics g) {
         int offset = 0;
         for (Iterator<Block> it = blockQueue.iterator(); it.hasNext();) {
             int[] temp = block(it.next());
@@ -248,7 +251,7 @@ public class GameField {
             offset += getBlockSize(temp) + 1;
         }
     }
-
+    
     public void drawBlockAt(int x, int y, int[] block, Graphics g) {
         int blockSize = getBlockSize(block);
         for (int i = 0; i < blockSize; i++) {
@@ -260,7 +263,6 @@ public class GameField {
             }
         }
     }
-    private int triforce;
 
     public void update(int delta) {
         triforce += delta;
