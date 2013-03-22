@@ -14,16 +14,17 @@ import org.newdawn.slick.state.StateBasedGame;
 public class Game extends StateBasedGame {
 
     AppGameContainer app;
-    public static final int MAINMENUSTATE = 0;
-    public static final int SINGLEPLAYERSTATE = 1;
-    public static final int SELFRELAYSTATE = 2;
+    public static final int MENUSTATE = 1;
+    public static final int SINGLEPLAYERSTATE = 2;
+    public static final int SELFRELAYSTATE = 3;
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException {
+        addState(new MenuState(MENUSTATE));
         addState(new SinglePlayerState(SINGLEPLAYERSTATE));
         addState(new SelfRelayState(SELFRELAYSTATE));
 
-        enterState(SELFRELAYSTATE);
+        enterState(MENUSTATE);
     }
 
     public static void main(String[] args) {

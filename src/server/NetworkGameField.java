@@ -1,7 +1,6 @@
 package server;
 
 import game.GameField;
-import java.util.Arrays;
 import org.newdawn.slick.Graphics;
 
 /**
